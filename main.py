@@ -4,83 +4,56 @@ ALPH_RU = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
 ALPH_RU_UPPER = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'
 
 
-def is_valid():
+def get_valid_shift():
     while True:
-        num = input('введите сдвиг: ')
-        if num.isdigit() and int(num) > 0:
-            return int(num)
-        print('введите целое, положительное число')
+        shift = input('введите сдвиг: ')
+        if shift.isdigit() and int(shift) > 0:
+            return int(shift)
+        print('ошибка: введите целое положительное число')
 
 
-def crypt_or_decrypt(prompt):
+def get_crypt_mode():
     while True:
-        choice = input(prompt).lower()
-        if choice in ('crypt', 'decrypt'):
-            return choice
-        print('команда не найдена')
+        mode = input('введите "crypt" для шифрования или "decrypt" для дешифрования: ').lower()
+        if mode in ('crypt', 'decrypt'):
+            return mode
+        print('ошибка: команда не распознана')
 
 
-def check_language(lang):
+def get_language():
     while True:
-        choice = input(lang).lower()
-        if choice in ("ru", "eng"):
-            return choice
-        print("введите 'ru' или 'eng'")
+        lang = input('выберите язык (ru/eng): ').lower()
+        if lang in ("ru", "eng"):
+            return lang
+        print("ошибка: введите 'ru' или 'eng'")
 
 
-def cesar_crypt(text, k, lang):
-    text_crypt = ''
+def process_text(text, shift, lang, mode):
+    shift = shift if mode == 'crypt' else -shift
+    new_char = ''
     if lang == 'eng':
-        for i in text:
-            if i in alph_en:
-                text_crypt += alph_en[(alph_en.index(i) + k) % 26]
-            elif i in alph_en_upper:
-                text_crypt += alph_en_upper[(alph_en_upper.index(i) + k) % 26]
-            else:
-                text_crypt += i
-    if lang == 'ru':
-        for i in text:
-            if i in alph_ru:
-                text_crypt += alph_ru[(alph_ru.index(i) + k) % 32]
-            elif i in alph_ru_upper:
-                text_crypt += alph_ru_upper[(alph_ru_upper.index(i) + k) % 32]
-            else:
-                text_crypt += i
-    print(text_crypt)
-
-
-def cesar_decrypt(text, k, lang):
-    text_decrypt = ''
-    if lang == "eng":
-        for i in text:
-            if i in alph_en:
-                text_decrypt += alph_en[(alph_en.index(i) - k) % 26]
-            elif i in alph_en_upper:
-                text_decrypt += alph_en_upper[(alph_en_upper.index(i) - k) % 26]
-            else:
-                text_decrypt += i
-    if lang == 'ru':
-        for i in text:
-            if i in alph_ru:
-                text_decrypt += alph_ru[(alph_ru.index(i) - k) % 32]
-            elif i in alph_ru_upper:
-                text_decrypt += alph_ru_upper[(alph_ru_upper.index(i) - k) % 32]
-            else:
-                text_decrypt += i
-    print(text_decrypt)
+        alph, alph_upper = ALPH_EN, ALPH_EN_UPPER
+    else:
+        alph, alph_upper = ALPH_RU, ALPH_RU_UPPER
+    for char in text:
+        if char in alph:
+            new_char += alph[(alph.index(char) + shift) % len(alph)]
+        elif char in alph_upper:
+            new_char += alph_upper[(alph_upper.index(char) + shift) % len(alph_upper)]
+        else:
+            new_char += char
+    return new_char
 
 
 def main():
-    print('добро пожаловать в шифратор и дешифратор цезаря')
-    text = input('введите текст, который хотите зашифровать или расшифровать: ')
-    shift = is_valid()
-    lang = check_language('введите язык алфавита ru/eng: ')
-    prompt = crypt_or_decrypt('введите "crypt", если хотите зашифровать текст\n'
-                              'введите "decrypt", если хотите расшифровать текст\n')
-    if prompt == 'crypt':
-        cesar_crypt(text, shift, lang)
-    if prompt == 'decrypt':
-        cesar_decrypt(text, shift, lang)
+    print('добро пожаловать в шифратор/дешифратор цезаря')
+    text = input('введите текст для обработки: ')
+    shift = get_valid_shift()
+    lang = get_language()
+    mode = get_crypt_mode()
+
+    result = process_text(text, shift, lang, mode)
+    print(f'результат: {result}')
 
 
 if __name__ == '__main__':
