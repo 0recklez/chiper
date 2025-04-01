@@ -1,16 +1,14 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def cesar(text, k):
+    alph_en = 'abcdefghijklmnopqrstuvwxyz'
+    alph_ru = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
+    text_crypt = ''
+    for i in text:
+        text_crypt += alph_en[(alph_en.index(i) + k) % 26]
+    print(text_crypt)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    cesar('a', 1)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
